@@ -1,0 +1,17 @@
+{
+  "name": "mlsa-kiit-hackathon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "dependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "start:all": "concurrently \"npm start --prefix server\" \"npm run dev --prefix client\"",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
