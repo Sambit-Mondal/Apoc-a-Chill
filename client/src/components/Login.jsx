@@ -22,6 +22,7 @@ const Login = () => {
         try {
             const res = await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/auth/login`, formData);
             localStorage.setItem("token", res.data.token);
+            localStorage.setItem("userEmail", formData.email);
             toast.success("Login successful!");
             navigate("/");
         } catch (err) {
