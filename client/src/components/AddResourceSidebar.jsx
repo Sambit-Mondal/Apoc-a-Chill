@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import { AuthContext } from '../contexts/AuthContextFile';
 import { ChevronDownIcon } from '@heroicons/react/24/solid';
+import { toast, ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const AddResourceSidebar = ({ isOpen, closeSidebar, fetchResources, editableResource }) => {
     const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -77,7 +79,7 @@ const AddResourceSidebar = ({ isOpen, closeSidebar, fetchResources, editableReso
         e.preventDefault();
 
         if (!imageUrl || !resource.title || !resource.quantity) {
-            alert('Please fill all required fields and upload an image.');
+            toast.error('Please fill all required fields and upload an image.');
             return;
         }
 
@@ -93,23 +95,23 @@ const AddResourceSidebar = ({ isOpen, closeSidebar, fetchResources, editableReso
             if (editableResource) {
                 // Update existing resource
                 await axios.put(`${import.meta.env.VITE_BACKEND_URL}/api/resource/${editableResource._id}`, newResource);
-                alert('Resource updated successfully!');
+                toast.success('Resource updated successfully!');
             } else {
                 // Add new resource
                 await axios.post(`${import.meta.env.VITE_BACKEND_URL}/api/resource/add`, newResource);
-                alert('Resource added successfully!');
+                toast.success('Resource added successfully!');
             }
             fetchResources();
             closeSidebar();
         } catch (err) {
             console.error('Failed to save resource:', err);
-            alert('Failed to save resource.');
+            toast.error('Failed to save resource.');
         }
     };
 
     const handleDelete = async () => {
         if (!editableResource || !editableResource._id) {
-            alert('Failed to delete resource: Missing resource ID.');
+            toast.error('Failed to delete resource: Missing resource ID.');
             return;
         }
 
@@ -121,12 +123,12 @@ const AddResourceSidebar = ({ isOpen, closeSidebar, fetchResources, editableReso
             console.log('DELETE Request URL:', deleteUrl);
 
             await axios.delete(deleteUrl);
-            alert('Resource deleted successfully!');
+            toast.success('Resource deleted successfully!');
             fetchResources();
             closeSidebar();
         } catch (err) {
             console.error('Failed to delete resource:', err);
-            alert('Failed to delete resource. Please try again.');
+            toast.error('Failed to delete resource. Please try again.');
         }
     };
 
@@ -146,15 +148,18 @@ const AddResourceSidebar = ({ isOpen, closeSidebar, fetchResources, editableReso
 
             const response = await axios.post('https://api.cloudinary.com/v1_1/sambit-mondal/image/upload', formData);
             setImageUrl(response.data.secure_url);
-            alert('Image uploaded successfully!');
+            toast.success('Image uploaded successfully!');
         } catch (error) {
             console.error('Image upload failed:', error);
-            alert('Failed to upload image. Please check your Cloudinary configuration.');
+            toast.error('Failed to upload image. Please check your Cloudinary configuration.');
         }
     };
 
     return (
         <>
+            <ToastContainer
+                position='top-right'
+            />
             {isOpen ?
                 <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50 transition ease-in-out duration-200"></div>
                 : ''

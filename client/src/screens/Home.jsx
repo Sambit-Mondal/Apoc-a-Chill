@@ -6,6 +6,7 @@ import SurvivalGuide from '../components/SurvivalGuide';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContextFile';
 import SurvivalScanner from '../components/SurvivalScanner';
+import EdibilityChecker from '../components/EdibilityChecker';
 
 const Home = () => {
   const [activeView, setActiveView] = useState('real-time-comm');
@@ -25,10 +26,11 @@ const Home = () => {
       <Navbar setActiveView={setActiveView} activeView={activeView} />
       {
         activeView === 'real-time-comm' ? <RealTimeComm userEmail={user.email} /> :
-        activeView === 'resourceTrading' ? <ResourceTrading /> :
-        activeView === 'survivalGuide' ? <SurvivalGuide /> :
-        activeView === 'survivalScanner' ? <SurvivalScanner /> :
-        null
+          activeView === 'resourceTrading' ? <ResourceTrading /> :
+            activeView === 'survivalGuide' ? <SurvivalGuide /> :
+              activeView === 'survivalScanner' ? <SurvivalScanner /> :
+                activeView === 'edibilityChecker' ? <EdibilityChecker /> :
+                  null
       }
     </div>
   );

@@ -27,10 +27,10 @@ const Navbar = ({ activeView, setActiveView }) => {
                 setUserName('User'); // Fallback to 'User' if the API call fails
             }
         };
-    
+
         fetchUserName();
     }, [user]);
-    
+
     const handleLogout = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('userEmail');
@@ -76,6 +76,12 @@ const Navbar = ({ activeView, setActiveView }) => {
                     onClick={() => setActiveView('survivalScanner')}
                 >
                     Survival Scanner
+                </div>
+                <div
+                    className={`w-full flex items-center justify-center font-bold rounded-md py-[3px] transition duration-100 ease-in-out cursor-pointer ${activeView === 'edibilityChecker' ? 'bg-mlsa-sky-blue text-black' : 'hover:bg-mlsa-sky-blue hover:text-black'}`}
+                    onClick={() => setActiveView('edibilityChecker')}
+                >
+                    Edibility Checker
                 </div>
             </div>
             <div className='w-full text-[0.7rem] text-center pb-2'>
