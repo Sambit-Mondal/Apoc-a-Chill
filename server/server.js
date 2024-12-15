@@ -10,6 +10,7 @@ const User = require('./models/User'); // Import the User model
 const resourceRoutes = require('./routes/resource');
 const emailRoutes = require('./routes/email');
 const cloudinary = require('cloudinary').v2;
+const Location = require('./models/location');
 require('dotenv').config();
 
 const app = express();
@@ -98,6 +99,29 @@ app.get('/api/messages', async (req, res) => {
         console.error('Error fetching messages:', err);
         res.status(500).json({ error: 'Failed to fetch messages' });
     }
+});
+
+
+//Location API Endpoint
+app.post('/api/location', async (req, res) => {
+  const { email, latitude, longitude, alertLevel } = req.body;
+
+  try {
+    const location = await Location.findOneAndUpdate(
+      { email },
+      { latitude, longitude, alertLevel },
+      { new: true, upsert: true }
+    );
+
+    // Broadcast the updated location to all users
+    const allLocations = await Location.find();
+    io.emit('update_users', allLocations);
+
+    res.status(200).json(location);
+  } catch (err) {
+    console.error('Error updating location:', err);
+    res.status(500).json({ error: 'Failed to update location' });
+  }
 });
 
 

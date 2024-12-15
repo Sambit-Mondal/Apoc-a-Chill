@@ -5,6 +5,7 @@ import ResourceTrading from '../components/ResourceTrading';
 import SurvivalGuide from '../components/SurvivalGuide';
 import { useContext } from 'react';
 import { AuthContext } from '../contexts/AuthContextFile';
+import SurvivalScanner from '../components/SurvivalScanner';
 
 const Home = () => {
   const [activeView, setActiveView] = useState('real-time-comm');
@@ -26,6 +27,7 @@ const Home = () => {
         activeView === 'real-time-comm' ? <RealTimeComm userEmail={user.email} /> :
         activeView === 'resourceTrading' ? <ResourceTrading /> :
         activeView === 'survivalGuide' ? <SurvivalGuide /> :
+        activeView === 'survivalScanner' ? <SurvivalScanner /> :
         null
       }
     </div>
