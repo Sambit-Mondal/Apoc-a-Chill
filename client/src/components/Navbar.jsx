@@ -44,12 +44,6 @@ const Navbar = ({ activeView, setActiveView }) => {
                 >
                     Resource Trading
                 </div>
-                <div
-                    className={`w-full flex items-center justify-center font-bold rounded-md py-[3px] transition duration-100 ease-in-out cursor-pointer ${activeView === 'survivalGuide' ? 'bg-mlsa-sky-blue text-black' : 'hover:bg-mlsa-sky-blue hover:text-black'}`}
-                    onClick={() => setActiveView('survivalGuide')}
-                >
-                    Survival Guide
-                </div>
             </div>
             <div className='w-full text-[0.7rem] text-center pb-2'>
                 Copyright &copy;{year} | Hackocalypse
