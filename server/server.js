@@ -7,6 +7,9 @@ const { Server } = require('socket.io');
 const authRoutes = require('./routes/auth');
 const Message = require('./models/message'); // Import the Message model
 const User = require('./models/User'); // Import the User model
+const resourceRoutes = require('./routes/resource');
+const emailRoutes = require('./routes/email');
+const cloudinary = require('cloudinary').v2;
 require('dotenv').config();
 
 const app = express();
@@ -25,6 +28,8 @@ app.use(express.json());
 
 // Routes
 app.use('/api/auth', authRoutes);
+app.use('/api/resource', resourceRoutes);
+app.use('/api/email', emailRoutes);
 
 // MongoDB Config
 const MongoDB_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/MLSA-Kiit-Hackathon';
@@ -94,6 +99,24 @@ app.get('/api/messages', async (req, res) => {
         res.status(500).json({ error: 'Failed to fetch messages' });
     }
 });
+
+
+cloudinary.config({
+    cloud_name: 'sambit-mondal', // Replace with your cloud name
+    api_key: process.env.CLOUDINARY_API_KEY, // Replace with your API key
+    api_secret: process.env.CLOUDINARY_API_SECRET, // Replace with your API secret
+});
+
+app.post('/api/cloudinary-signature', (req, res) => {
+    const timestamp = Math.round(new Date().getTime() / 1000); // Current timestamp
+    const signature = cloudinary.utils.api_sign_request(
+        { timestamp, upload_preset: 'mlsa-hackathon' },
+        process.env.CLOUDINARY_API_SECRET // Use the correct environment variable
+    );
+
+    res.json({ timestamp, signature });
+});
+
 
 // PORT Config
 const PORT = process.env.PORT || 5000;
