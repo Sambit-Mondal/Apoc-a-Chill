@@ -10,10 +10,11 @@ const SurvivalScanner = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [alertLevel, setAlertLevel] = useState("Low");
   const [position, setPosition] = useState(null);
-  const [allUsers, setAllUsers] = useState([]); // Real-time users' data
-  const dropdownRef = useRef(null);
+  const [allUsers, setAllUsers] = useState([]);
+  const [webhookTriggered, setWebhookTriggered] = useState(false); // Track webhook state
+  const [cooldown, setCooldown] = useState(false); // Add cooldown state
 
-  // Get user email from AuthContext
+  const dropdownRef = useRef(null);
   const { user } = useContext(AuthContext);
   const userEmail = user?.email;
 
@@ -36,19 +37,49 @@ const SurvivalScanner = () => {
     }).catch((err) => console.error("Error sending data:", err));
   }, [position, userEmail]);
 
-  // Function to fetch the user's location
+  // Function to fetch the user's location and trigger the webhook
   const fetchLocation = useCallback(() => {
+    if (webhookTriggered || cooldown) {
+      console.log("Webhook already triggered or on cooldown. Skipping request.");
+      return; // Prevent duplicate requests
+    }
+
     navigator.geolocation.getCurrentPosition(
       (location) => {
         const { latitude, longitude } = location.coords;
         setPosition({ latitude, longitude });
         sendLocationData(alertLevel, { latitude, longitude });
+
+        // Trigger webhook for SOS alert
+        fetch(`${import.meta.env.VITE_BACKEND_URL}/api/webhook`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            alertMessage: "Emergency! Immediate assistance needed.",
+            latitude,
+            longitude,
+            alertLevel,
+          }),
+        })
+          .then((response) => {
+            if (response.ok) {
+              console.log("Webhook triggered successfully!");
+              setWebhookTriggered(true); // Mark the webhook as triggered
+              setCooldown(true); // Enable cooldown
+              setTimeout(() => setCooldown(false), 30000); // Reset cooldown after 30 seconds
+            } else {
+              console.error("Failed to trigger webhook:", response.statusText);
+            }
+          })
+          .catch((err) => console.error("Error triggering webhook:", err));
       },
       (error) => {
         console.error("Error fetching location:", error);
       }
     );
-  }, [alertLevel, sendLocationData]);
+  }, [alertLevel, sendLocationData, webhookTriggered, cooldown]);
 
   // Custom hook to move the map to the user's position
   const MoveMapToUser = ({ position }) => {
@@ -58,7 +89,7 @@ const SurvivalScanner = () => {
         longitude: PropTypes.number.isRequired,
       }),
     };
-    
+
     const map = useMap();
     useEffect(() => {
       if (position) {
@@ -75,11 +106,10 @@ const SurvivalScanner = () => {
       setAllUsers(users);
     });
 
-    fetchLocation(); // Initial fetch
     return () => {
       socket.current.disconnect();
     };
-  }, [fetchLocation]);
+  }, []);
 
   // Dropdown handlers
   const toggleDropdown = () => setDropdownOpen(!dropdownOpen);
@@ -132,7 +162,6 @@ const SurvivalScanner = () => {
                 radius={5000}
                 pathOptions={{ color: alertLevel === "High" ? "red" : "green" }}
               />
-              {/* Display user's current location */}
               <Marker position={[position.latitude, position.longitude]}>
                 <Popup>Your Location</Popup>
               </Marker>
@@ -145,18 +174,7 @@ const SurvivalScanner = () => {
               </Popup>
             </Marker>
           ))}
-          {/* Dynamically move the map */}
           <MoveMapToUser position={position} />
-          {/* Latitude and Longitude Display */}
-          {position && (
-            <div
-              className="absolute bottom-2 left-2 bg-mlsa-bg border-2 border-mlsa-sky-blue text-white text-sm rounded-md p-2"
-              style={{ zIndex: 1000 }}
-            >
-              <p>Lat: {position.latitude.toFixed(4)}</p>
-              <p>Lng: {position.longitude.toFixed(4)}</p>
-            </div>
-          )}
         </MapContainer>
       </div>
       <div className="flex items-center justify-center w-full h-[15%] gap-5">
@@ -187,8 +205,11 @@ const SurvivalScanner = () => {
           </div>
         </div>
         <div
-          className="bg-red-500 rounded-full w-10 h-10 flex items-center justify-center text-white font-bold p-2 cursor-pointer"
+          className={`${
+            cooldown ? "bg-gray-500" : "bg-red-500"
+          } rounded-full w-10 h-10 flex items-center justify-center text-white font-bold p-2 cursor-pointer`}
           onClick={fetchLocation}
+          disabled={cooldown} // Disable during cooldown
         >
           SOS
         </div>

@@ -11,6 +11,7 @@ const resourceRoutes = require('./routes/resource');
 const emailRoutes = require('./routes/email');
 const cloudinary = require('cloudinary').v2;
 const Location = require('./models/location');
+const axios = require('axios');
 require('dotenv').config();
 
 const app = express();
@@ -104,24 +105,50 @@ app.get('/api/messages', async (req, res) => {
 
 //Location API Endpoint
 app.post('/api/location', async (req, res) => {
-  const { email, latitude, longitude, alertLevel } = req.body;
+    const { email, latitude, longitude, alertLevel } = req.body;
 
-  try {
-    const location = await Location.findOneAndUpdate(
-      { email },
-      { latitude, longitude, alertLevel },
-      { new: true, upsert: true }
-    );
+    try {
+        const location = await Location.findOneAndUpdate(
+            { email },
+            { latitude, longitude, alertLevel },
+            { new: true, upsert: true }
+        );
 
-    // Broadcast the updated location to all users
-    const allLocations = await Location.find();
-    io.emit('update_users', allLocations);
+        // Broadcast the updated location to all users
+        const allLocations = await Location.find();
+        io.emit('update_users', allLocations);
 
-    res.status(200).json(location);
-  } catch (err) {
-    console.error('Error updating location:', err);
-    res.status(500).json({ error: 'Failed to update location' });
-  }
+        res.status(200).json(location);
+    } catch (err) {
+        console.error('Error updating location:', err);
+        res.status(500).json({ error: 'Failed to update location' });
+    }
+});
+
+// Webhook API endpoint
+app.post('/api/webhook', async (req, res) => {
+    const { alertMessage, latitude, longitude, alertLevel } = req.body;
+
+    // Customize your message
+    const message = `🚨 **SOS Alert** 🚨\nAlert Level: ${alertLevel}\nMessage: ${alertMessage}\nLocation: https://www.google.com/maps?q=${latitude},${longitude}`;
+
+    try {
+        // Example: Sending to Telegram Bot
+        const TELEGRAM_API_URL = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`;
+        const TELEGRAM_CHAT_ID = process.env.TELEGRAM_CHAT_ID;
+
+        await axios.post(TELEGRAM_API_URL, {
+            chat_id: TELEGRAM_CHAT_ID,
+            text: message,
+            parse_mode: 'Markdown',
+        });
+
+        // Add similar logic for Slack/Discord if required
+        res.status(200).json({ success: true, message: 'Alert sent successfully!' });
+    } catch (error) {
+        console.error('Error sending webhook alert:', error);
+        res.status(500).json({ success: false, error: 'Failed to send alert' });
+    }
 });
 
 
