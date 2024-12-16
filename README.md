@@ -53,7 +53,7 @@ Upload images of food, and our model will analyze if it's safe to eat using **AW
 | <img src="./assets/flask.png" alt="Flask" width="100">            | Server-side machine learning models    |
 | <img src="./assets/web-sockets.png" alt="Web Sockets" width="100"> | Real-time communication                 |
 | <img src="./assets/leaflet.png" alt="Leaflet" width="100">        | Interactive maps for Survival Scanner  |
-| <img src="./assets/aws-rekognition.svg" alt="AWS Rekognition" width="100"> | Food edibility analysis                |
+| <img src="./assets/aws-rekognition.png" alt="AWS Rekognition" width="100"> | Food edibility analysis                |
 | <img src="./assets/cloudinary.png" alt="Cloudinary" width="100">  | Media storage                          |
 
 ---
