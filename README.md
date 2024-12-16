@@ -48,13 +48,14 @@ Upload images of food, and our model will analyze if it's safe to eat using **AW
 
 | **Tech**       | **Used For**                           |
 |-----------------|---------------------------------------|
-| ![MERN Stack](./assets/mern-stack.png)   | Full-stack development                 |
-| ![Python](./assets/python.png)          | Backend AI/ML models                   |
-| ![Flask](./assets/flask.png)            | Server-side machine learning models    |
-| ![Web Sockets](./assets/web-sockets.png) | Real-time communication                 |
-| ![Leaflet](./assets/leaflet.png)        | Interactive maps for Survival Scanner  |
-| ![AWS Rekognition](./assets/aws-rekognition.png) | Food edibility analysis                |
-| ![Cloudinary](./assets/cloudinary.png)  | Media storage                          |
+| <img src="./assets/mern-stack.png" alt="MERN Stack" width="100">   | Full-stack development                 |
+| <img src="./assets/python.png" alt="Python" width="100">          | Backend AI/ML models                   |
+| <img src="./assets/flask.png" alt="Flask" width="100">            | Server-side machine learning models    |
+| <img src="./assets/web-sockets.png" alt="Web Sockets" width="100"> | Real-time communication                 |
+| <img src="./assets/leaflet.png" alt="Leaflet" width="100">        | Interactive maps for Survival Scanner  |
+| <img src="./assets/aws-rekognition.svg" alt="AWS Rekognition" width="100"> | Food edibility analysis                |
+| <img src="./assets/cloudinary.png" alt="Cloudinary" width="100">  | Media storage                          |
+| <img src="./assets/concurrently.png" alt="Concurrently" width="100"> | Running multiple processes  |
 
 ---
 
