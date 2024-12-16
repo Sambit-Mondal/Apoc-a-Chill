@@ -55,7 +55,6 @@ Upload images of food, and our model will analyze if it's safe to eat using **AW
 | <img src="./assets/leaflet.png" alt="Leaflet" width="100">        | Interactive maps for Survival Scanner  |
 | <img src="./assets/aws-rekognition.svg" alt="AWS Rekognition" width="100"> | Food edibility analysis                |
 | <img src="./assets/cloudinary.png" alt="Cloudinary" width="100">  | Media storage                          |
-| <img src="./assets/concurrently.png" alt="Concurrently" width="100"> | Running multiple processes  |
 
 ---
 
